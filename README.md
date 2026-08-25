@@ -38,22 +38,38 @@ New-Item -ItemType Junction -Path .\content -Target "D:\path\to\your\vault"
 
 ## Docker 部署
 
-构建镜像：
+复制环境变量模板，并编辑 `.env` 中的 `QUARTZ_CONTENT_PATH`，将其改为 NAS 上实际的笔记目录：
 
 ```bash
-docker build -t zluxyao-quartz .
+cp .env.example .env
 ```
 
-启动容器，并把 NAS 上的笔记目录挂载到 `/usr/src/app/content`：
+例如：
+
+```dotenv
+QUARTZ_CONTENT_PATH=/path/to/notes
+QUARTZ_HTTP_PORT=2222
+QUARTZ_WS_PORT=3001
+TZ=Asia/Shanghai
+```
+
+构建并启动：
 
 ```bash
-docker run -d \
-  --name zluxyao-quartz \
-  --restart unless-stopped \
-  -p 2222:2222 \
-  -p 3001:3001 \
-  -v /path/to/notes:/usr/src/app/content \
-  zluxyao-quartz
+docker compose up -d --build
+```
+
+查看状态和日志：
+
+```bash
+docker compose ps
+docker compose logs -f quartz
+```
+
+停止并删除容器：
+
+```bash
+docker compose down
 ```
 
 站点地址：<http://NAS-IP:2222>
@@ -65,6 +81,7 @@ docker run -d \
 此仓库用于保存 Quartz 程序、插件和站点配置，不保存个人笔记原文。
 
 - `content` 不会被复制进 Docker 镜像。
+- Compose 默认以只读方式将笔记挂载到 `/usr/src/app/content`。
 - Obsidian 笔记应通过同步工具单独同步到 NAS。
 - 部署时使用目录挂载将笔记提供给容器。
 - 提交前应确认 `git status` 中没有出现个人 Markdown 文件。

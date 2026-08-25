@@ -1,0 +1,39 @@
+name: zluxyao-quartz
+
+services:
+  quartz:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: zluxyao-quartz:local
+    container_name: zluxyao-quartz
+    restart: unless-stopped
+    init: true
+    environment:
+      TZ: ${TZ:-Asia/Shanghai}
+    ports:
+      - "${QUARTZ_HTTP_PORT:-2222}:2222"
+      - "${QUARTZ_WS_PORT:-3001}:3001"
+    volumes:
+      - type: bind
+        source: ${QUARTZ_CONTENT_PATH:-./content}
+        target: /usr/src/app/content
+        read_only: true
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - >-
+          fetch('http://127.0.0.1:2222/').then(() =>
+          process.exit(0)).catch(() => process.exit(1))
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 45s
+    stop_grace_period: 30s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

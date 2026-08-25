@@ -16,6 +16,8 @@ FROM node:22-slim
 WORKDIR /usr/src/app
 COPY --from=builder /usr/src/app/ /usr/src/app/
 COPY . .
+RUN test -f /usr/src/app/quartz.ts
+RUN grep -Fq "const contentRoot = path.resolve(argv.directory)" /usr/src/app/quartz/build.ts
 RUN mkdir -p content
 EXPOSE 2222 3001
 CMD ["npx", "quartz", "build", "--serve", "--port", "2222"]

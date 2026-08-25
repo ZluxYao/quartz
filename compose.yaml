@@ -1,22 +1,25 @@
-name: zluxyao-quartz
+name: zluxyao-quartz_2
 
 services:
   quartz:
     build:
-      context: .
+      context: ${QUARTZ_PROJECT_PATH:-/vol1/1000/blog/quartz-site}
       dockerfile: Dockerfile
-    image: zluxyao-quartz:local
+    image: zluxyao-quartz:watcher-v2
+    pull_policy: build
     container_name: zluxyao-quartz
     restart: unless-stopped
     init: true
     environment:
       TZ: ${TZ:-Asia/Shanghai}
+      CHOKIDAR_USEPOLLING: "${CHOKIDAR_USEPOLLING:-true}"
+      CHOKIDAR_INTERVAL: "${CHOKIDAR_INTERVAL:-3000}"
     ports:
       - "${QUARTZ_HTTP_PORT:-2222}:2222"
-      - "${QUARTZ_WS_PORT:-3001}:3001"
+      - "${QUARTZ_WS_PORT:-2223}:3001"
     volumes:
       - type: bind
-        source: ${QUARTZ_CONTENT_PATH:-./content}
+        source: ${QUARTZ_CONTENT_PATH:-/vol1/1000/blog/ZluxYao}
         target: /usr/src/app/content
         read_only: true
     healthcheck:

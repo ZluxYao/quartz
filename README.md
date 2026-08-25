@@ -17,7 +17,7 @@
 - 支持搜索、双向链接、局部关系图谱、目录、阅读模式、暗色模式和 Obsidian Canvas。
 - 提供 Enhancing Mindmap 兼容插件，将带有 `mindmap-plugin: basic` 的标题树转换为 Mermaid 思维导图。
 - 内容目录与站点代码分离，个人笔记不会打包进 Docker 镜像。
-- Docker 容器默认监听 `2222`，热更新 WebSocket 使用 `3001`。
+- Docker 站点端口默认使用 `2222`，热更新 WebSocket 的宿主机端口使用 `2223`。
 
 ## 本地预览
 
@@ -25,12 +25,14 @@
 
 ```powershell
 npm install
-npx quartz build --serve
+npx quartz build --serve -d "D:\path\to\your\vault"
 ```
 
 默认预览地址：<http://localhost:8080>
 
-本机的 `content` 可以指向独立的 Obsidian 笔记目录。例如 Windows NTFS Junction：
+因为 `/content/` 已被 Git 忽略以保护笔记隐私，本地预览时应通过 `-d` 直接指定独立的 Obsidian 笔记目录。Quartz v5 会遵守 `.gitignore`，因此使用默认 `content` 路径可能显示 `Found 0 input files`。
+
+也可以按需创建 Windows NTFS Junction，供其他本地工具通过 `content` 访问笔记：
 
 ```powershell
 New-Item -ItemType Junction -Path .\content -Target "D:\path\to\your\vault"
@@ -49,7 +51,9 @@ cp .env.example .env
 ```dotenv
 QUARTZ_CONTENT_PATH=/path/to/notes
 QUARTZ_HTTP_PORT=2222
-QUARTZ_WS_PORT=3001
+QUARTZ_WS_PORT=2223
+CHOKIDAR_USEPOLLING=true
+CHOKIDAR_INTERVAL=3000
 TZ=Asia/Shanghai
 ```
 
@@ -74,7 +78,7 @@ docker compose down
 
 站点地址：<http://NAS-IP:2222>
 
-在 Nginx 中将域名反向代理到 NAS 的 `2222` 端口即可。Quartz 会监听挂载目录中的 Markdown 变更并重新构建页面。
+在 Nginx 中将域名反向代理到 NAS 的 `2222` 端口即可。Compose 默认每 3 秒轮询挂载目录，确保 fnOS 同步文件时即使没有传递文件事件，Quartz 也会检测 Markdown 变更并重新构建页面。
 
 ## 内容隐私
 

@@ -1,17 +1,103 @@
-# Quartz v5
+# ZluxYao Quartz
 
-> “[One] who works with the door open gets all kinds of interruptions, but [they] also occasionally gets clues as to what the world is and what might be important.” — Richard Hamming
+基于 [Quartz v5](https://github.com/jackyzha0/quartz) 维护的个人优化版本，用于将 Obsidian Markdown 笔记发布为数字花园。
 
-Quartz is a set of tools that helps you publish your [digital garden](https://jzhao.xyz/posts/networked-thought) and notes as a website for free.
+- 站点：[note.zlux.top](https://note.zlux.top)
+- 维护者：[ZluxYao](https://github.com/ZluxYao)
+- 开发分支：`site`
+- 官方同步分支：`official`
 
-🔗 Read the documentation and get started: https://quartz.jzhao.xyz/
+## 主要优化
 
-[Join the Discord Community](https://discord.gg/cRFFHYye7t)
+- 中文界面与适合中文阅读的排版。
+- 标题使用 `Schibsted Grotesk`，正文使用 `LXGW WenKai TC`，代码使用 `JetBrains Mono`。
+- 内置多套主题预设，首次访问默认使用 `Stripe`。
+- 代码高亮使用 GitHub Light / GitHub Dark 风格。
+- 调整桌面端内容区、左侧探索栏、工具栏和关系图谱尺寸。
+- 支持搜索、双向链接、局部关系图谱、目录、阅读模式、暗色模式和 Obsidian Canvas。
+- 提供 Enhancing Mindmap 兼容插件，将带有 `mindmap-plugin: basic` 的标题树转换为 Mermaid 思维导图。
+- 内容目录与站点代码分离，个人笔记不会打包进 Docker 镜像。
+- Docker 容器默认监听 `2222`，热更新 WebSocket 使用 `3001`。
 
-## Sponsors
+## 本地预览
 
-<p align="center">
-  <a href="https://github.com/sponsors/jackyzha0">
-    <img src="https://cdn.jsdelivr.net/gh/jackyzha0/jackyzha0/sponsorkit/sponsors.svg" />
-  </a>
-</p>
+环境要求：Node.js 22 或更高版本、npm 10.9.2 或更高版本。
+
+```powershell
+npm install
+npx quartz build --serve
+```
+
+默认预览地址：<http://localhost:8080>
+
+本机的 `content` 可以指向独立的 Obsidian 笔记目录。例如 Windows NTFS Junction：
+
+```powershell
+New-Item -ItemType Junction -Path .\content -Target "D:\path\to\your\vault"
+```
+
+## Docker 部署
+
+构建镜像：
+
+```bash
+docker build -t zluxyao-quartz .
+```
+
+启动容器，并把 NAS 上的笔记目录挂载到 `/usr/src/app/content`：
+
+```bash
+docker run -d \
+  --name zluxyao-quartz \
+  --restart unless-stopped \
+  -p 2222:2222 \
+  -p 3001:3001 \
+  -v /path/to/notes:/usr/src/app/content \
+  zluxyao-quartz
+```
+
+站点地址：<http://NAS-IP:2222>
+
+在 Nginx 中将域名反向代理到 NAS 的 `2222` 端口即可。Quartz 会监听挂载目录中的 Markdown 变更并重新构建页面。
+
+## 内容隐私
+
+此仓库用于保存 Quartz 程序、插件和站点配置，不保存个人笔记原文。
+
+- `content` 不会被复制进 Docker 镜像。
+- Obsidian 笔记应通过同步工具单独同步到 NAS。
+- 部署时使用目录挂载将笔记提供给容器。
+- 提交前应确认 `git status` 中没有出现个人 Markdown 文件。
+
+## 同步官方更新
+
+远程仓库约定：
+
+```text
+origin   https://github.com/ZluxYao/quartz.git
+upstream https://github.com/jackyzha0/quartz.git
+```
+
+将 Quartz 官方 `v5` 更新合并到个人版本：
+
+```bash
+git fetch upstream
+git switch official
+git pull --ff-only upstream v5
+git switch site
+git merge official
+```
+
+解决冲突并验证后推送：
+
+```bash
+npm install
+npm run check
+git push origin site
+```
+
+## 上游项目
+
+本项目基于 Jacky Zhao 的 [Quartz](https://github.com/jackyzha0/quartz) 开发。Quartz 官方文档：<https://quartz.jzhao.xyz/>
+
+本仓库沿用上游项目的 [MIT License](LICENSE.txt)。

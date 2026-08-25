@@ -1,0 +1,7 @@
+.git
+.quartz-cache
+**/node_modules
+content
+public
+prof
+*.log

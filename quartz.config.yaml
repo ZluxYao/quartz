@@ -59,6 +59,11 @@ plugins:
         - git
         - filesystem
     order: 10
+  - source: "@local/enhancing-mindmap-compat"
+    enabled: true
+    options:
+      rootLabel: 思维导图
+    order: 35
   - source: "@quartz-community/syntax-highlighting"
     enabled: true
     options:
@@ -213,7 +218,7 @@ plugins:
     enabled: true
     order: 45
     options:
-      defaultPreset: linear
+      defaultPreset: stripe
       storageKey: themePreset
     layout:
       position: left

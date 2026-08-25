@@ -1,12 +1,12 @@
 # yaml-language-server: $schema=./quartz/plugins/quartz-plugins.schema.json
 configuration:
-  pageTitle: Quartz 5
+  pageTitle: ZluxYao
   pageTitleSuffix: ""
   enableSPA: true
   enablePopovers: true
   analytics:
     provider: plausible
-  locale: en-US
+  locale: zh-CN
   baseUrl: note.zlux.top
   ignorePatterns:
     - private
@@ -16,28 +16,37 @@ configuration:
     fontOrigin: googleFonts
     cdnCaching: true
     typography:
-      header: Schibsted Grotesk
-      body: Source Sans Pro
-      code: IBM Plex Mono
+      header:
+        name: Schibsted Grotesk
+        weights:
+          - 600
+          - 700
+        includeItalic: false
+      body:
+        name: LXGW WenKai TC
+        weights:
+          - 400
+        includeItalic: false
+      code: JetBrains Mono
     colors:
       lightMode:
-        light: "#faf8f8"
-        lightgray: "#e5e5e5"
-        gray: "#b8b8b8"
-        darkgray: "#4e4e4e"
-        dark: "#2b2b2b"
-        secondary: "#284b63"
-        tertiary: "#84a59d"
+        light: "#faf8f7"
+        lightgray: "#e6e0dd"
+        gray: "#817671"
+        darkgray: "#4b4542"
+        dark: "#24211f"
+        secondary: "#28546a"
+        tertiary: "#4f785f"
         highlight: rgba(143, 159, 169, 0.15)
         textHighlight: "#fff23688"
       darkMode:
-        light: "#161618"
-        lightgray: "#393639"
-        gray: "#646464"
-        darkgray: "#d4d4d4"
-        dark: "#ebebec"
-        secondary: "#7b97aa"
-        tertiary: "#84a59d"
+        light: "#151716"
+        lightgray: "#2d3430"
+        gray: "#87938c"
+        darkgray: "#d3d8d2"
+        dark: "#f3f0ea"
+        secondary: "#8ab2c4"
+        tertiary: "#9dbb91"
         highlight: rgba(143, 159, 169, 0.15)
         textHighlight: "#b3aa0288"
 plugins:
@@ -72,7 +81,9 @@ plugins:
     order: 50
     layout:
       position: right
-      priority: 30
+      priority: 10
+      display: desktop-only
+      condition: has-toc
   - source: "@quartz-community/crawl-links"
     enabled: true
     options:
@@ -99,7 +110,7 @@ plugins:
     enabled: false
     order: 92
   - source: "@quartz-community/quartz-fonts"
-    enabled: true
+    enabled: false
   - source: "@quartz-themes/core"
     enabled: false
     options:
@@ -152,11 +163,12 @@ plugins:
     layout:
       position: left
       priority: 50
+      display: desktop-only
   - source: "@quartz-community/graph"
     enabled: true
     layout:
-      position: right
-      priority: 10
+      position: afterBody
+      priority: 20
   - source: "@quartz-community/search"
     enabled: true
     layout:
@@ -168,8 +180,9 @@ plugins:
   - source: "@quartz-community/backlinks"
     enabled: true
     layout:
-      position: right
-      priority: 50
+      position: afterBody
+      priority: 10
+      condition: has-backlinks
   - source: "@quartz-community/article-title"
     enabled: true
     layout:
@@ -196,6 +209,16 @@ plugins:
       position: left
       priority: 30
       group: toolbar
+  - source: "@local/theme-switcher"
+    enabled: true
+    order: 45
+    options:
+      defaultPreset: linear
+      storageKey: themePreset
+    layout:
+      position: left
+      priority: 32
+      group: toolbar
   - source: "@quartz-community/reader-mode"
     enabled: true
     layout:
@@ -220,8 +243,7 @@ plugins:
     enabled: true
     options:
       links:
-        GitHub: https://github.com/jackyzha0/quartz
-        Discord Community: https://discord.gg/cRFFHYye7t
+        GitHub: https://github.com/ZluxYao
     layout:
       position: footer
       priority: 50

@@ -1,3 +1,152 @@
 @use "./variables.scss" as *;
 
-// put your custom CSS here!
+// Give the local and global graph enough room to be useful.
+.graph {
+  & > .graph-outer {
+    height: 400px;
+
+    & > .graph-container,
+    & > .graph-container > canvas {
+      width: 100% !important;
+      height: 100% !important;
+    }
+  }
+
+  & > .global-graph-outer > .global-graph-container {
+    width: 85vw;
+    height: 85vh;
+  }
+}
+
+.page-body {
+  .backlinks {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .graph {
+    margin-top: 1rem;
+  }
+}
+
+// Keep long note names from widening or destabilizing the left sidebar.
+.explorer {
+  .explorer-content ul li > a,
+  .folder-container div > a,
+  .folder-container div > button span {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .folder-container div > button {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+.sidebar.left {
+  min-width: 280px;
+  max-width: 320px;
+}
+
+// Keep the desktop toolbar inside the 256px content area of the left sidebar.
+@media all and not ($mobile) {
+  .sidebar.left {
+    padding-inline-start: 0.5rem;
+    padding-inline-end: 4rem;
+  }
+
+  .sidebar.left > .flex-component {
+    width: 100%;
+    max-width: 100%;
+    flex-wrap: nowrap !important;
+    align-items: center;
+    justify-content: space-between;
+
+    > div {
+      flex: 0 0 auto !important;
+      min-width: 0;
+    }
+  }
+
+  .sidebar.left .search {
+    min-width: 2rem;
+    max-width: 2rem;
+
+    > .search-button {
+      width: 2rem;
+      padding: 0;
+
+      > p {
+        display: none;
+      }
+
+      > svg {
+        margin: 0 auto;
+      }
+    }
+  }
+
+  .sidebar.left .theme-switcher-select {
+    inline-size: 7.5rem;
+  }
+}
+
+@media all and ($desktop) {
+  .page {
+    max-width: 1612px;
+  }
+
+  .page > #quartz-body {
+    grid-template-columns: 400px minmax(0, 1fr) 320px;
+  }
+
+  .sidebar.left {
+    max-width: 400px;
+  }
+}
+
+@media all and ($tablet) {
+  .page > #quartz-body {
+    grid-template-columns: 400px minmax(0, 1fr);
+  }
+
+  .sidebar.left {
+    max-width: 400px;
+  }
+}
+
+footer {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--lightgray);
+
+  > p {
+    display: none;
+  }
+}
+
+.readermode .readerIcon {
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+:root[reader-mode="on"] .readermode .readerIcon {
+  opacity: 1;
+  transform: scale(1.02);
+}
+
+:root[reader-mode="off"] .readermode .readerIcon,
+:root:not([reader-mode]) .readermode .readerIcon {
+  opacity: 0.65;
+}
+
+@media all and ($mobile) {
+  .readermode {
+    display: none !important;
+  }
+}

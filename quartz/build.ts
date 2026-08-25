@@ -157,12 +157,24 @@ async function startWatching(
     lastBuildMs: 0,
   }
 
-  const watcher = chokidar.watch(".", {
+  const contentRoot = path.resolve(argv.directory)
+  const pollingSetting = process.env.CHOKIDAR_USEPOLLING?.trim().toLowerCase()
+  const usePolling = pollingSetting === "true" || pollingSetting === "1"
+  const configuredInterval = Number.parseInt(process.env.CHOKIDAR_INTERVAL ?? "", 10)
+  const pollingInterval =
+    Number.isFinite(configuredInterval) && configuredInterval > 0 ? configuredInterval : 300
+
+  const watcherOptions = {
     awaitWriteFinish: { stabilityThreshold: 250 },
     persistent: true,
-    cwd: argv.directory,
     ignoreInitial: true,
-  })
+    usePolling,
+    interval: pollingInterval,
+    binaryInterval: pollingInterval,
+  }
+  const knownFiles = new Set(allFiles.map((filePath) => toPosixPath(filePath.toString())))
+  const fileTargets = Array.from(knownFiles, (filePath) => path.resolve(contentRoot, filePath))
+  const fileWatcher = chokidar.watch(fileTargets, watcherOptions)
 
   const changes: ChangeEvent[] = []
   let rebuildTimeout: ReturnType<typeof setTimeout> | null = null
@@ -175,28 +187,71 @@ async function startWatching(
       })
     }, 100)
   }
-  watcher
-    .on("add", (fp) => {
-      fp = toPosixPath(fp)
-      if (buildData.ignored(fp)) return
-      changes.push({ path: fp as FilePath, type: "add" })
-      scheduleRebuild()
-    })
+
+  const recordChange = (fp: string, type: ChangeEvent["type"]) => {
+    const absolutePath = path.isAbsolute(fp) ? fp : path.resolve(contentRoot, fp)
+    const relativePath = toPosixPath(path.relative(contentRoot, absolutePath))
+    if (relativePath.startsWith("../") || buildData.ignored(relativePath)) return
+    if (type === "add") knownFiles.add(relativePath)
+    if (type === "delete") knownFiles.delete(relativePath)
+    if (changes.some((change) => change.path === relativePath && change.type === type)) return
+    console.log(`Detected content ${type}: ${relativePath}`)
+    changes.push({ path: relativePath as FilePath, type })
+    scheduleRebuild()
+  }
+
+  fileWatcher
     .on("change", (fp) => {
-      fp = toPosixPath(fp)
-      if (buildData.ignored(fp)) return
-      changes.push({ path: fp as FilePath, type: "change" })
-      scheduleRebuild()
+      recordChange(fp, "change")
     })
     .on("unlink", (fp) => {
-      fp = toPosixPath(fp)
-      if (buildData.ignored(fp)) return
-      changes.push({ path: fp as FilePath, type: "delete" })
-      scheduleRebuild()
+      recordChange(fp, "delete")
     })
 
+  if (fileTargets.length > 0) {
+    await new Promise<void>((resolve, reject) => {
+      fileWatcher.once("ready", resolve)
+      fileWatcher.once("error", reject)
+    })
+  }
+
+  let scanInProgress = false
+  const reconcileFileList = async () => {
+    if (scanInProgress) return
+    scanInProgress = true
+    try {
+      const scannedFiles = await glob("**/*.*", argv.directory, cfg.configuration.ignorePatterns)
+      const currentFiles = new Set(scannedFiles.map((filePath) => toPosixPath(filePath.toString())))
+
+      for (const filePath of currentFiles) {
+        if (knownFiles.has(filePath)) continue
+        fileWatcher.add(path.resolve(contentRoot, filePath))
+        recordChange(filePath, "add")
+      }
+
+      for (const filePath of Array.from(knownFiles)) {
+        if (currentFiles.has(filePath)) continue
+        await fileWatcher.unwatch(path.resolve(contentRoot, filePath))
+        recordChange(filePath, "delete")
+      }
+    } finally {
+      scanInProgress = false
+    }
+  }
+  const discoveryTimer = setInterval(() => {
+    reconcileFileList().catch((err) => {
+      console.error(styleText("red", "Content scan failed:"), err.message ?? err)
+    })
+  }, pollingInterval)
+
+  const watchMode = usePolling ? `${pollingInterval}ms polling` : "filesystem events"
+  console.log(
+    `Watching ${knownFiles.size} content files in \`${contentRoot}\` using ${watchMode} (ready)`,
+  )
+
   return async () => {
-    await watcher.close()
+    clearInterval(discoveryTimer)
+    await fileWatcher.close()
   }
 }
 
@@ -353,6 +408,9 @@ async function rebuild(changes: ChangeEvent[], clientRefresh: () => void, buildD
       `Emitted ${emittedFiles} files to \`${argv.output}\` in ${perf.timeSince("rebuild")}`,
     )
     console.log(styleText("green", `Done rebuilding in ${perf.timeSince()}`))
+    for (const fp of Object.keys(changesSinceLastBuild)) {
+      delete changesSinceLastBuild[fp as FilePath]
+    }
     changes.splice(0, numChangesInBuild)
     clientRefresh()
   } finally {

@@ -12,7 +12,3 @@ replit.nix
 .quartz/
 quartz/cli/tui/dist/
 .turbo/
-
-# Keep personal notes local while preserving the content directory.
-content/*
-!content/.gitkeep

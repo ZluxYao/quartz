@@ -1,11 +1,11 @@
-name: zluxyao-quartz_2
+name: zluxyao-quartz_3
 
 services:
   quartz:
     build:
       context: ${QUARTZ_PROJECT_PATH:-/vol1/1000/blog/quartz-site}
       dockerfile: Dockerfile
-    image: zluxyao-quartz:watcher-v2
+    image: zluxyao-quartz:watcher-v3
     pull_policy: build
     container_name: zluxyao-quartz
     restart: unless-stopped

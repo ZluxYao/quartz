@@ -218,7 +218,7 @@ plugins:
     enabled: true
     order: 45
     options:
-      defaultPreset: stripe
+      defaultPreset: claude
       storageKey: themePreset
     layout:
       position: left

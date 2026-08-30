@@ -1,0 +1,135 @@
+svg .mindmap-node[class*="mindmap-level-"] rect,
+svg .mindmap-node[class*="mindmap-level-"] path,
+svg .mindmap-node[class*="mindmap-level-"] circle,
+svg .mindmap-node[class*="mindmap-level-"] polygon {
+  stroke-width: 2px !important;
+}
+
+svg .mindmap-node[class*="mindmap-level-"] text {
+  font-weight: 600;
+}
+
+svg .mindmap-node.mindmap-level-0 rect,
+svg .mindmap-node.mindmap-level-0 path,
+svg .mindmap-node.mindmap-level-0 circle,
+svg .mindmap-node.mindmap-level-0 polygon {
+  fill: #2563eb !important;
+  stroke: #1d4ed8 !important;
+}
+
+svg .mindmap-node.mindmap-level-0 text {
+  fill: #ffffff !important;
+}
+
+svg .mindmap-node.mindmap-level-1 rect,
+svg .mindmap-node.mindmap-level-1 path,
+svg .mindmap-node.mindmap-level-1 circle,
+svg .mindmap-node.mindmap-level-1 polygon {
+  fill: #4ade80 !important;
+  stroke: #16a34a !important;
+}
+
+svg .mindmap-node.mindmap-level-1 text {
+  fill: #052e16 !important;
+}
+
+svg .mindmap-node.mindmap-level-2 rect,
+svg .mindmap-node.mindmap-level-2 path,
+svg .mindmap-node.mindmap-level-2 circle,
+svg .mindmap-node.mindmap-level-2 polygon {
+  fill: #facc15 !important;
+  stroke: #ca8a04 !important;
+}
+
+svg .mindmap-node.mindmap-level-2 text {
+  fill: #422006 !important;
+}
+
+svg .mindmap-node.mindmap-level-3 rect,
+svg .mindmap-node.mindmap-level-3 path,
+svg .mindmap-node.mindmap-level-3 circle,
+svg .mindmap-node.mindmap-level-3 polygon {
+  fill: #a78bfa !important;
+  stroke: #7c3aed !important;
+}
+
+svg .mindmap-node.mindmap-level-3 text {
+  fill: #2e1065 !important;
+}
+
+svg .mindmap-node.mindmap-level-4 rect,
+svg .mindmap-node.mindmap-level-4 path,
+svg .mindmap-node.mindmap-level-4 circle,
+svg .mindmap-node.mindmap-level-4 polygon {
+  fill: #f472b6 !important;
+  stroke: #db2777 !important;
+}
+
+svg .mindmap-node.mindmap-level-4 text {
+  fill: #500724 !important;
+}
+
+svg .mindmap-node.mindmap-level-5 rect,
+svg .mindmap-node.mindmap-level-5 path,
+svg .mindmap-node.mindmap-level-5 circle,
+svg .mindmap-node.mindmap-level-5 polygon {
+  fill: #22d3ee !important;
+  stroke: #0891b2 !important;
+}
+
+svg .mindmap-node.mindmap-level-5 text {
+  fill: #083344 !important;
+}
+
+svg .mindmap-node.mindmap-level-6 rect,
+svg .mindmap-node.mindmap-level-6 path,
+svg .mindmap-node.mindmap-level-6 circle,
+svg .mindmap-node.mindmap-level-6 polygon {
+  fill: #fb923c !important;
+  stroke: #ea580c !important;
+}
+
+svg .mindmap-node.mindmap-level-6 text {
+  fill: #431407 !important;
+}
+
+svg .mindmap-node.mindmap-level-7 rect,
+svg .mindmap-node.mindmap-level-7 path,
+svg .mindmap-node.mindmap-level-7 circle,
+svg .mindmap-node.mindmap-level-7 polygon {
+  fill: #2dd4bf !important;
+  stroke: #0d9488 !important;
+}
+
+svg .mindmap-node.mindmap-level-7 text {
+  fill: #042f2e !important;
+}
+
+svg .mindmap-edges .edge-depth-0 {
+  stroke: #16a34a !important;
+}
+
+svg .mindmap-edges .edge-depth-1 {
+  stroke: #ca8a04 !important;
+}
+
+svg .mindmap-edges .edge-depth-2 {
+  stroke: #7c3aed !important;
+}
+
+svg .mindmap-edges .edge-depth-3 {
+  stroke: #db2777 !important;
+}
+
+svg .mindmap-edges .edge-depth-4 {
+  stroke: #0891b2 !important;
+}
+
+svg .mindmap-edges .edge-depth-5 {
+  stroke: #ea580c !important;
+}
+
+svg .mindmap-edges .edge-depth-6,
+svg .mindmap-edges .edge-depth-7 {
+  stroke: #0d9488 !important;
+}

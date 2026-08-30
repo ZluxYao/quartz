@@ -14,6 +14,8 @@ services:
       TZ: ${TZ:-Asia/Shanghai}
       CHOKIDAR_USEPOLLING: "${CHOKIDAR_USEPOLLING:-true}"
       CHOKIDAR_INTERVAL: "${CHOKIDAR_INTERVAL:-3000}"
+      QUARTZ_CONFIG_PATH: /usr/src/app/runtime-config/quartz.config.yaml
+      QUARTZ_STATS_DB_PATH: ${QUARTZ_STATS_DB_PATH:-/usr/src/app/data/site-stats.sqlite}
     ports:
       - "${QUARTZ_HTTP_PORT:-2222}:2222"
       - "${QUARTZ_WS_PORT:-2223}:3001"
@@ -22,6 +24,13 @@ services:
         source: ${QUARTZ_CONTENT_PATH:-/vol1/1000/blog/ZluxYao}
         target: /usr/src/app/content
         read_only: true
+      - type: bind
+        source: ${QUARTZ_CONFIG_DIR:-.}
+        target: /usr/src/app/runtime-config
+        read_only: true
+      - type: bind
+        source: ${QUARTZ_STATS_PATH:-./data}
+        target: /usr/src/app/data
     healthcheck:
       test:
         - CMD

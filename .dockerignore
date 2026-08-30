@@ -2,6 +2,7 @@
 .quartz-cache
 **/node_modules
 content
+data
 public
 prof
 *.log

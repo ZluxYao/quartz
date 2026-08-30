@@ -453,6 +453,10 @@ export async function handleBuild(argv) {
     }
 
     await build(clientRefresh)
+    const { createSiteStatsService } = await import("./site-stats.js")
+    const siteStats = createSiteStatsService({
+      databasePath: process.env.QUARTZ_STATS_DB_PATH,
+    })
     const server = http.createServer(async (req, res) => {
       if (argv.baseDir && !req.url?.startsWith(argv.baseDir)) {
         console.log(
@@ -468,6 +472,8 @@ export async function handleBuild(argv) {
 
       // strip baseDir prefix
       req.url = req.url?.slice(argv.baseDir.length)
+
+      if (await siteStats.handle(req, res)) return
 
       const serve = async () => {
         const release = await buildMutex.acquire()
@@ -562,6 +568,7 @@ export async function handleBuild(argv) {
       }
       throw err
     })
+    server.on("close", () => siteStats.close())
     server.listen(argv.port)
     const wss = new WebSocketServer({ port: argv.wsPort })
     wss.on("error", (err) => {
@@ -596,8 +603,12 @@ export async function handleBuild(argv) {
       "quartz.config.yaml",
       "quartz.config.default.yaml",
     ])
+    const runtimeConfigPath = process.env.QUARTZ_CONFIG_PATH?.trim()
+    if (runtimeConfigPath && fs.existsSync(runtimeConfigPath)) {
+      paths.push(path.resolve(runtimeConfigPath))
+    }
     chokidar
-      .watch(paths, { ignoreInitial: true })
+      .watch([...new Set(paths)], { ignoreInitial: true })
       .on("add", () => build(clientRefresh))
       .on("change", () => build(clientRefresh))
       .on("unlink", () => build(clientRefresh))

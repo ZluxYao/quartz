@@ -1,0 +1,48 @@
+.site-stats {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem 0;
+  margin: 0 0 1.25rem;
+  color: var(--darkgray);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  opacity: 0.78;
+
+  &[data-site-stats-state="error"] {
+    opacity: 0.55;
+  }
+
+  .site-stat {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.25rem;
+    white-space: nowrap;
+  }
+
+  .site-stat + .site-stat::before {
+    content: "";
+    align-self: stretch;
+    width: 1px;
+    margin: 0 0.7rem;
+    background: var(--lightgray);
+  }
+
+  strong {
+    min-width: 1.5ch;
+    color: var(--dark);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .site-stats {
+    align-items: flex-start;
+
+    .site-stat + .site-stat::before {
+      margin-inline: 0.5rem;
+    }
+  }
+}

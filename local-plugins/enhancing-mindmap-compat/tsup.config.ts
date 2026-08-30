@@ -10,4 +10,5 @@ export default defineConfig({
   target: "es2022",
   outDir: "dist",
   platform: "node",
+  loader: { ".css": "text" },
 })

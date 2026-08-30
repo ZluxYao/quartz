@@ -1,0 +1,80 @@
+{
+  "name": "@local/site-stats",
+  "version": "0.1.0",
+  "description": "Footer statistics component for a self-hosted Quartz site",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./components": {
+      "types": "./dist/components/index.d.ts",
+      "import": "./dist/components/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "npm run build && tsx --test test/*.test.ts",
+    "check": "npm run typecheck && npm test"
+  },
+  "peerDependencies": {
+    "preact": "^10.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.10",
+    "preact": "^10.28.2",
+    "preact-render-to-string": "^6.6.5",
+    "sass": "^1.97.3",
+    "tsup": "^8.5.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=22",
+    "npm": ">=10.9.2"
+  },
+  "quartz": {
+    "name": "site-stats",
+    "displayName": "Site Statistics",
+    "description": "Displays site uptime, online visitors, unique visitors, and page views.",
+    "category": "component",
+    "version": "0.1.0",
+    "quartzVersion": ">=5.0.0",
+    "dependencies": [],
+    "defaultOrder": 45,
+    "defaultEnabled": true,
+    "defaultOptions": {
+      "siteStartedAt": "2026-08-23T00:00:00+08:00",
+      "endpoint": "/api/site-stats"
+    },
+    "components": {
+      "SiteStats": {
+        "name": "SiteStats",
+        "displayName": "Site Statistics",
+        "description": "Compact live site statistics for the footer.",
+        "version": "0.1.0",
+        "defaultPosition": "footer",
+        "defaultPriority": 40
+      }
+    },
+    "optionSchema": {
+      "siteStartedAt": {
+        "type": "string"
+      },
+      "endpoint": {
+        "type": "string"
+      }
+    }
+  }
+}

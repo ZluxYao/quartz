@@ -25,7 +25,7 @@ services:
         target: /usr/src/app/content
         read_only: true
       - type: bind
-        source: ${QUARTZ_CONFIG_DIR:-.}
+        source: ${QUARTZ_PROJECT_PATH:-/vol1/1000/blog/quartz-site}
         target: /usr/src/app/runtime-config
         read_only: true
       - type: bind

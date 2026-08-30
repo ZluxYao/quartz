@@ -50,7 +50,6 @@ cp .env.example .env
 例如：
 
 ```dotenv
-QUARTZ_CONFIG_DIR=/vol1/1000/blog/quartz-site
 QUARTZ_CONTENT_PATH=/path/to/notes
 QUARTZ_STATS_PATH=/vol1/1000/blog/quartz-stats
 QUARTZ_STATS_DB_PATH=/usr/src/app/data/site-stats.sqlite
@@ -84,7 +83,7 @@ docker compose down
 
 在 Nginx 中将域名反向代理到 NAS 的 `2222` 端口即可。Compose 默认每 3 秒轮询挂载目录，确保 fnOS 同步文件时即使没有传递文件事件，Quartz 也会检测 Markdown 变更并重新构建页面。
 
-`QUARTZ_CONFIG_DIR` 会以只读方式挂载到容器，Quartz 从中读取并监听 `quartz.config.yaml`。修改后会自动重新生成页面；也可以运行 `docker compose restart quartz` 强制重新加载，无需重建镜像。新增 npm 依赖、插件或修改 `Dockerfile` 时仍需使用 `docker compose up -d --build`。
+`QUARTZ_PROJECT_PATH` 会同时作为镜像构建目录和运行时配置目录，以只读方式挂载给容器。Quartz 从中读取并监听 `quartz.config.yaml`，修改后会自动重新生成页面；也可以运行 `docker compose restart quartz` 强制重新加载，无需重建镜像。新增 npm 依赖、插件或修改 `Dockerfile` 时仍需使用 `docker compose up -d --build`。
 
 站点统计保存在 `${QUARTZ_STATS_PATH}/site-stats.sqlite`。默认只保存随机生成的匿名浏览器标识、页面路径和访问时间，不保存姓名、账号或 IP 地址。在线人数使用 30 秒心跳和 90 秒活跃窗口计算，容器重启后会重新计算；累计访客和累计浏览量不会清零。
 

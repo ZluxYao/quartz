@@ -244,6 +244,14 @@ plugins:
     layout:
       position: afterBody
       priority: 10
+  - source: "@local/site-stats"
+    enabled: true
+    options:
+      siteStartedAt: "2026-08-23T00:00:00+08:00"
+      endpoint: /api/site-stats
+    layout:
+      position: footer
+      priority: 40
   - source: "@quartz-community/footer"
     enabled: true
     options:

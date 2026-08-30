@@ -4,21 +4,34 @@
 
   const visitorStorageKey = "quartz-site-stats-visitor"
   const heartbeatIntervalMs = 30_000
-  const sessionId = crypto.randomUUID()
   let renderedResponse = 0
   let requestSequence = 0
   let hasRenderedStats = false
 
-  const createVisitorId = () => crypto.randomUUID()
+  const createIdentifier = () => {
+    const cryptoApi = globalThis.crypto
+    if (typeof cryptoApi?.randomUUID === "function") return cryptoApi.randomUUID()
+
+    const bytes = new Uint8Array(24)
+    if (typeof cryptoApi?.getRandomValues === "function") {
+      cryptoApi.getRandomValues(bytes)
+    } else {
+      for (let index = 0; index < bytes.length; index++) {
+        bytes[index] = Math.floor(Math.random() * 256)
+      }
+    }
+    return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("")
+  }
+  const sessionId = createIdentifier()
   const readVisitorId = () => {
     try {
       const stored = localStorage.getItem(visitorStorageKey)
       if (stored && /^[a-zA-Z0-9_-]{16,80}$/.test(stored)) return stored
-      const created = createVisitorId()
+      const created = createIdentifier()
       localStorage.setItem(visitorStorageKey, created)
       return created
     } catch {
-      return createVisitorId()
+      return createIdentifier()
     }
   }
   const visitorId = readVisitorId()
@@ -83,7 +96,7 @@
   const recordView = () => {
     renderUptime()
     return send("view", {
-      eventId: crypto.randomUUID(),
+      eventId: createIdentifier(),
       path: location.pathname,
     })
   }
